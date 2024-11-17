@@ -1,5 +1,4 @@
 from OthelloGame import OthelloGame
-from OthelloUtil import getValidMoves, isValidMove
 from Random import BOT as RandomBOT
 
 borad_size = 10
@@ -34,24 +33,24 @@ class Human():
         return (row, col)
     
     def getAction(self, color):
-        self.valids=getValidMoves(self.game, color)
+        self.valids = self.game.getValidMoves(color)
         s = "Valid Moves: " + ", ".join(map(str, [self.regularize_pos(move) for move in self.valids]))
         print(s)
-        remind_str = "Enter your move using a letter for the column and a number for the row.\n"+"For example: 'B 1' or '1 B'. Please enter your move: "
+        remind_str = "Enter your move using a letter for the column and a number for the row.\n" + "For example: 'B 1' or '1 B'. Please enter your move: "
         while True:
             user_input = str(input(remind_str))
             pos = self.parse_input(user_input=user_input)
             if pos in self.valids:
                 return pos
             else:
-                remind_str("Invalid move! Please try again: ")
+                print(self.valids)
+                remind_str = "Invalid move! Please try again: "
     
 def play():
     g = OthelloGame(borad_size)
     p1 = RandomBOT(game = g)
-    p2 = RandomBOT(game = g)
-    p3 = Human(game=g)
-    result = g.play(p3, p3)
+    p2 = Human(game=g)
+    result = g.play(p1, p1)
     print(result)
 
 def main():
