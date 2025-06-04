@@ -1,24 +1,17 @@
 import random
-from OthelloGame import OthelloGame
+from GameUtil import *
 
 class RandomBOT():
-    def __init__(self, game: OthelloGame):
-        self.game = game
-
-    def getAction(self, color):
-        valids=self.game.getValidMoves(color)
+    def getAction(self, board, color):
+        valids=getValidMoves(board, color)
         position=random.choice(valids)
         return position
 
 class Human():
-    def __init__(self, game: OthelloGame):
-        self.game = game
-        self.valids = []
-        
     def regularize_pos(self, pos):
         return (pos[0]+1, chr(pos[1] + ord('A')))
-    
-    def parse_input(self, user_input: str):
+
+    def parse_input(self, user_input: str, board_size):
         # 移除多餘空白，並轉為大寫以統一處理
         user_input = user_input.strip().upper().split()
         if len(user_input) != 2:
@@ -34,19 +27,19 @@ class Human():
             return
 
         # 檢查行列是否有效
-        if not (0 <= row < self.game.board_size and 0 <= col < self.game.board_size):
+        if not (0 <= row < board_size and 0 <= col < board_size):
             return
         
         return (row, col)
     
-    def getAction(self, color):
-        self.valids = self.game.getValidMoves(color)
+    def getAction(self, board, color):
+        self.valids = getValidMoves(board, color)
         s = "Valid Moves: " + ", ".join(map(str, [self.regularize_pos(move) for move in self.valids]))
         print(s)
         remind_str = "Enter your move using a letter for the column and a number for the row.\n" + "For example: 'B 1' or '1 B'. Please enter your move: "
         while True:
             user_input = str(input(remind_str))
-            pos = self.parse_input(user_input=user_input)
+            pos = self.parse_input(user_input=user_input, board_size=len(board))
             if pos in self.valids:
                 return pos
             else:
